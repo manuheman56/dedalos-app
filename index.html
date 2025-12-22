@@ -3,103 +3,165 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DÉDALO'S – Asistente</title>
+  <title>DÉDALO'S – El Laberinto</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1b1b1b">
   <style>
-    body { margin: 0; font-family: sans-serif; background: #000; color: #f2e6c9; text-align: center; }
-    .screen { display: none; padding: 20px; }
-    .active { display: block; }
-    h1 { color: #d4af37; }
-    .action-dots { display: flex; justify-content: center; gap: 10px; margin: 15px; }
-    .dot { width: 25px; height: 25px; border-radius: 50%; border: 2px solid #d4af37; }
-    .used { background: #8b0000; }
-    button { background: #8b0000; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; font-weight: bold; }
-    .secondary { background: #444; }
-    .inventory { display: flex; justify-content: space-around; background: #1a1a1a; padding: 10px; border-radius: 8px; margin-top: 20px; }
-    .item { opacity: 0.3; font-size: 0.8em; }
-    .item.owned { opacity: 1; color: #d4af37; }
+    :root {
+      --gold: #d4af37;
+      --blood: #8b0000;
+      --parchment: #f2e6c9;
+      --shadow: #0a0a0a;
+    }
+    body {
+      margin: 0;
+      font-family: 'Georgia', serif;
+      background: var(--shadow);
+      color: var(--parchment);
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    .screen { display: none; padding: 25px; animation: fadeIn 1s ease-in-out; }
+    .active { display: flex; flex-direction: column; align-items: center; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    h1 { font-size: 3em; color: var(--gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); margin-bottom: 5px; }
+    .subtitle { font-style: italic; color: #888; margin-bottom: 30px; }
+
+    /* Estilo Pergamino */
+    .card {
+      background: rgba(30, 30, 30, 0.8);
+      border: 1px solid var(--gold);
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: inset 0 0 20px #000;
+      width: 90%;
+      max-width: 400px;
+    }
+
+    /* Acciones */
+    .action-container { margin: 20px 0; text-align: center; }
+    .action-dots { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; }
+    .dot { width: 35px; height: 35px; border: 2px solid var(--gold); border-radius: 50%; position: relative; }
+    .dot.used::after { content: '✕'; color: var(--blood); font-size: 24px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }
+
+    /* Botones */
+    button {
+      background: linear-gradient(to bottom, #4a0000, #2a0000);
+      color: var(--gold);
+      border: 1px solid var(--gold);
+      padding: 15px 30px;
+      font-size: 1.1em;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      cursor: pointer;
+      margin: 10px 0;
+      width: 100%;
+      transition: 0.3s;
+    }
+    button:active { background: var(--gold); color: #000; }
+    button.secondary { background: transparent; border-color: #555; color: #888; }
+
+    /* Minotauro y Reglas */
+    .log { font-size: 0.9em; background: #000; padding: 15px; border-left: 3px solid var(--blood); margin-top: 20px; text-align: left; }
+    .inventory { display: flex; gap: 10px; margin-top: 15px; }
+    .item { padding: 5px 10px; border: 1px solid #444; font-size: 0.8em; opacity: 0.4; }
+    .item.active { opacity: 1; border-color: var(--gold); color: var(--gold); }
   </style>
 </head>
 <body>
 
 <div id="intro" class="screen active">
-  <h1>DÉDALO’S</h1>
-  <p>El Laberinto del Minotauro</p>
-  <button onclick="goTo('players')">Comenzar Partida</button>
+  <h1>DÉDALO</h1>
+  <p class="subtitle">"Solo el ingenio te sacará de Creta"</p>
+  <div class="card">
+    <p>Has sido arrojado al laberinto. El Minotauro acecha en las sombras.</p>
+    <button onclick="goTo('players')">Entrar al Laberinto</button>
+  </div>
 </div>
 
 <div id="players" class="screen">
-  <h2>¿Cuántos sois?</h2>
-  <button onclick="startGame(3)">3</button>
-  <button onclick="startGame(4)">4</button>
-  <button onclick="startGame(5)">5</button>
-  <button onclick="startGame(6)">6</button>
+  <h2>Tributos en Peligro</h2>
+  <div class="card">
+    <p>¿Cuántos almas buscan la salida?</p>
+    <button onclick="startGame(3)">3 Jugadores</button>
+    <button onclick="startGame(4)">4 Jugadores</button>
+    <button onclick="startGame(5)">5 Jugadores</button>
+    <button onclick="startGame(6)">6 Jugadores</button>
+  </div>
 </div>
 
 <div id="game" class="screen">
-  <h2 id="turn-title">Jugador 1</h2>
-  <div class="action-dots" id="dots-container">
-    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
-  </div>
-  <button onclick="useAction()">Gastar Acción</button>
-  <button class="secondary" onclick="nextTurn()">Siguiente Turno</button>
-
-  <div class="inventory">
-    <div id="item-axe" class="item" onclick="toggleItem('item-axe')">🪓 Hacha</div>
-    <div id="item-key" class="item" onclick="toggleItem('item-key')">🔑 Llave</div>
-    <div id="item-shield" class="item" onclick="toggleItem('item-shield')">🛡️ Escudo</div>
-  </div>
+  <h2 id="turn-title" style="color: var(--gold);">Turno del Jugador 1</h2>
   
-  <details style="margin-top:20px; text-align: left;">
-    <summary>📖 Ayuda Rápida (Manual)</summary>
-    <ul>
-      <li><strong>3 Acciones:</strong> Mover, Rotar, o Usar Objeto.</li>
-      <li><strong>Muros:</strong> No se pueden atravesar muros negros.</li>
-      <li><strong>Minotauro:</strong> Se mueve 2 casillas tras el turno del jugador activo.</li>
+  <div class="card">
+    <div class="action-dots">
+      <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+    </div>
+    <button onclick="spendAction()">Gastar Acción</button>
+    
+    <div class="log" id="game-log">
+      El laberinto está en silencio...
+    </div>
+
+    <div class="inventory">
+      <div id="inv-h" class="item" onclick="toggleItem('inv-h')">🪓 Hacha</div>
+      <div id="inv-l" class="item" onclick="toggleItem('inv-l')">🔑 Llave</div>
+      <div id="inv-e" class="item" onclick="toggleItem('inv-e')">🛡️ Escudo</div>
+    </div>
+
+    <button class="secondary" onclick="finishTurn()" style="margin-top: 20px;">Terminar Turno</button>
+  </div>
+
+  <details style="margin-top: 20px; color: #888;">
+    <summary>Codex de Reglas</summary>
+    <ul style="text-align: left; font-size: 0.85em;">
+      <li><strong>Acciones:</strong> Mover, Rotar Loseta o Usar Objeto.</li>
+      <li><strong>Losetas:</strong> Solo puedes rotar la loseta donde estás si no hay muros negros bloqueando el giro.</li>
+      <li><strong>El Minotauro:</strong> Se mueve 2 casillas tras cada turno.</li>
     </ul>
   </details>
 </div>
 
 <script>
-let currentP = 1, totalP = 0, used = 0;
+let currentP = 1, totalP = 0, actions = 0;
+const log = document.getElementById('game-log');
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function startGame(num) {
-  totalP = num;
-  goTo('game');
-  resetDots();
-}
+function startGame(n) { totalP = n; goTo('game'); resetTurn(); }
 
-function useAction() {
-  if (used < 3) {
-    document.querySelectorAll('.dot')[used].classList.add('used');
-    used++;
+function spendAction() {
+  if (actions < 3) {
+    actions++;
+    document.getElementById('d' + actions).classList.add('used');
+    log.innerHTML = "Has realizado una acción. Te quedan " + (3-actions) + ".";
   }
 }
 
-function nextTurn() {
-  currentP = (currentP % totalP) + 1;
-  used = 0;
-  document.getElementById('turn-title').innerText = "Jugador " + currentP;
-  resetDots();
+function toggleItem(id) { document.getElementById(id).classList.toggle('active'); }
+
+function finishTurn() {
+  log.innerHTML = "<span style='color:var(--blood)'>⚠️ EL MINOTAURO SE MUEVE:</span> Avanza 2 casillas hacia el tributo más cercano.";
+  setTimeout(() => {
+    currentP = (currentP % totalP) + 1;
+    resetTurn();
+  }, 3500);
 }
 
-function resetDots() {
+function resetTurn() {
+  actions = 0;
+  document.getElementById('turn-title').innerText = "Turno del Jugador " + currentP;
   document.querySelectorAll('.dot').forEach(d => d.classList.remove('used'));
+  if(currentP !== 1) log.innerHTML = "El laberinto ha cambiado. Es tu turno.";
 }
 
-function toggleItem(id) {
-  document.getElementById(id).classList.toggle('owned');
-}
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('sw.js');
-}
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>
 </body>
 </html>

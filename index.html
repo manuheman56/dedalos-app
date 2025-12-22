@@ -1,84 +1,36 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DÉDALO'S – Asistente del Laberinto</title>
+  <title>DÉDALO'S – Asistente</title>
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1b1b1b">
   <style>
-    body {
-      margin: 0;
-      font-family: 'Trebuchet MS', Arial, sans-serif;
-      background: radial-gradient(circle at top, #222 0%, #000 70%);
-      color: #f2e6c9;
-      text-align: center;
-    }
-    .screen {
-      display: none;
-      padding: 24px;
-    }
-    .active {
-      display: block;
-    }
-    h1 {
-      font-size: 2.6em;
-      color: #d4af37;
-      margin-bottom: 0;
-    }
-    h2 {
-      color: #cfae70;
-    }
-    p {
-      font-size: 1.1em;
-      line-height: 1.5em;
-    }
-    button {
-      background: linear-gradient(#8b0000, #5a0000);
-      color: #fff;
-      border: none;
-      padding: 14px 22px;
-      margin: 12px;
-      font-size: 18px;
-      border-radius: 10px;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.5);
-    }
-    button.secondary {
-      background: #444;
-    }
+    body { margin: 0; font-family: sans-serif; background: #000; color: #f2e6c9; text-align: center; }
+    .screen { display: none; padding: 20px; }
+    .active { display: block; }
+    h1 { color: #d4af37; }
+    .action-dots { display: flex; justify-content: center; gap: 10px; margin: 15px; }
+    .dot { width: 25px; height: 25px; border-radius: 50%; border: 2px solid #d4af37; }
+    .used { background: #8b0000; }
+    button { background: #8b0000; color: white; border: none; padding: 12px 20px; margin: 5px; border-radius: 5px; font-weight: bold; }
+    .secondary { background: #444; }
+    .inventory { display: flex; justify-content: space-around; background: #1a1a1a; padding: 10px; border-radius: 8px; margin-top: 20px; }
+    .item { opacity: 0.3; font-size: 0.8em; }
+    .item.owned { opacity: 1; color: #d4af37; }
   </style>
 </head>
 <body>
 
 <div id="intro" class="screen active">
   <h1>DÉDALO’S</h1>
-  <h2>El Laberinto del Minotauro</h2>
-  <p>
-    Fuiste arrojado al corazón del laberinto de Creta.<br>
-    Dédalo lo construyó.<br>
-    El Minotauro lo habita.<br><br>
-    <strong>Solo uno escapará.</strong>
-  </p>
-  <button onclick="goTo('tutorial')">Comenzar historia</button>
-</div>
-
-<div id="tutorial" class="screen">
-  <h2>El destino está marcado</h2>
-  <p>
-    Este asistente será tu voz en la oscuridad.<br>
-    No necesitas conocer las reglas.<br><br>
-    En tu turno:<br>
-    ✔ Harás <strong>3 acciones distintas</strong><br>
-    ✔ La app evitará errores<br>
-    ✔ El Minotauro nunca duerme
-  </p>
-  <button onclick="goTo('players')">Entrar al laberinto</button>
+  <p>El Laberinto del Minotauro</p>
+  <button onclick="goTo('players')">Comenzar Partida</button>
 </div>
 
 <div id="players" class="screen">
-  <h2>Tributos</h2>
-  <p>¿Cuántos jugadores sois?</p>
+  <h2>¿Cuántos sois?</h2>
   <button onclick="startGame(3)">3</button>
   <button onclick="startGame(4)">4</button>
   <button onclick="startGame(5)">5</button>
@@ -86,46 +38,68 @@
 </div>
 
 <div id="game" class="screen">
-  <h2>Turno guiado</h2>
-  <p id="status"></p>
-  <button onclick="alert('Si tienes una loseta de Minotauro, debes jugarla ahora antes de hacer cualquier otra acción.')">
-    🐂 Comprobar Minotauro
-  </button>
-  <br>
-  <button class="secondary" onclick="nextTurn()">Siguiente jugador</button>
+  <h2 id="turn-title">Jugador 1</h2>
+  <div class="action-dots" id="dots-container">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+  <button onclick="useAction()">Gastar Acción</button>
+  <button class="secondary" onclick="nextTurn()">Siguiente Turno</button>
+
+  <div class="inventory">
+    <div id="item-axe" class="item" onclick="toggleItem('item-axe')">🪓 Hacha</div>
+    <div id="item-key" class="item" onclick="toggleItem('item-key')">🔑 Llave</div>
+    <div id="item-shield" class="item" onclick="toggleItem('item-shield')">🛡️ Escudo</div>
+  </div>
+  
+  <details style="margin-top:20px; text-align: left;">
+    <summary>📖 Ayuda Rápida (Manual)</summary>
+    <ul>
+      <li><strong>3 Acciones:</strong> Mover, Rotar, o Usar Objeto.</li>
+      <li><strong>Muros:</strong> No se pueden atravesar muros negros.</li>
+      <li><strong>Minotauro:</strong> Se mueve 2 casillas tras el turno del jugador activo.</li>
+    </ul>
+  </details>
 </div>
 
 <script>
-let currentPlayer = 1;
-let totalPlayers = 0;
+let currentP = 1, totalP = 0, used = 0;
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
 
-function startGame(players) {
-  totalPlayers = players;
-  currentPlayer = 1;
+function startGame(num) {
+  totalP = num;
   goTo('game');
-  updateStatus();
+  resetDots();
+}
+
+function useAction() {
+  if (used < 3) {
+    document.querySelectorAll('.dot')[used].classList.add('used');
+    used++;
+  }
 }
 
 function nextTurn() {
-  currentPlayer++;
-  if (currentPlayer > totalPlayers) currentPlayer = 1;
-  updateStatus();
+  currentP = (currentP % totalP) + 1;
+  used = 0;
+  document.getElementById('turn-title').innerText = "Jugador " + currentP;
+  resetDots();
 }
 
-function updateStatus() {
-  document.getElementById('status').innerText =
-    'Turno del Jugador ' + currentPlayer + '. El laberinto observa.';
+function resetDots() {
+  document.querySelectorAll('.dot').forEach(d => d.classList.remove('used'));
+}
+
+function toggleItem(id) {
+  document.getElementById(id).classList.toggle('owned');
 }
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
+  navigator.serviceWorker.register('sw.js');
 }
 </script>
-
 </body>
 </html>

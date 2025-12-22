@@ -1,10 +1,15 @@
-
 {
-  "name": "DÉDALO'S – Asistente del Laberinto",
-  "short_name": "DÉDALO'S",
-  "start_url": ".",
+  "name": "Dédalos Asistente de Juego",
+  "short_name": "Dédalos",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#1b1b1b",
-  "icons": []
+  "theme_color": "#8b0000",
+  "icons": [
+    {
+      "src": "https://via.placeholder.com/192.png?text=D",
+      "sizes": "192x192",
+      "type": "image/png"
+    }
+  ]
 }

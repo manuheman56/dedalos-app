@@ -7,131 +7,91 @@
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#1b1b1b">
   <style>
-    :root {
-      --gold: #d4af37;
-      --blood: #8b0000;
-      --parchment: #f2e6c9;
-      --shadow: #0a0a0a;
-    }
-    body {
-      margin: 0;
-      font-family: 'Georgia', serif;
-      background: var(--shadow);
-      color: var(--parchment);
-      overflow-x: hidden;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    .screen { display: none; padding: 25px; animation: fadeIn 1s ease-in-out; }
-    .active { display: flex; flex-direction: column; align-items: center; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-    h1 { font-size: 3em; color: var(--gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); margin-bottom: 5px; }
-    .subtitle { font-style: italic; color: #888; margin-bottom: 30px; }
-
-    /* Estilo Pergamino */
-    .card {
-      background: rgba(30, 30, 30, 0.8);
-      border: 1px solid var(--gold);
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: inset 0 0 20px #000;
-      width: 90%;
-      max-width: 400px;
-    }
-
-    /* Acciones */
-    .action-container { margin: 20px 0; text-align: center; }
-    .action-dots { display: flex; justify-content: center; gap: 15px; margin-bottom: 15px; }
-    .dot { width: 35px; height: 35px; border: 2px solid var(--gold); border-radius: 50%; position: relative; }
-    .dot.used::after { content: '✕'; color: var(--blood); font-size: 24px; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-weight: bold; }
-
-    /* Botones */
-    button {
-      background: linear-gradient(to bottom, #4a0000, #2a0000);
-      color: var(--gold);
-      border: 1px solid var(--gold);
-      padding: 15px 30px;
-      font-size: 1.1em;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      cursor: pointer;
-      margin: 10px 0;
-      width: 100%;
-      transition: 0.3s;
-    }
-    button:active { background: var(--gold); color: #000; }
-    button.secondary { background: transparent; border-color: #555; color: #888; }
-
-    /* Minotauro y Reglas */
-    .log { font-size: 0.9em; background: #000; padding: 15px; border-left: 3px solid var(--blood); margin-top: 20px; text-align: left; }
-    .inventory { display: flex; gap: 10px; margin-top: 15px; }
-    .item { padding: 5px 10px; border: 1px solid #444; font-size: 0.8em; opacity: 0.4; }
-    .item.active { opacity: 1; border-color: var(--gold); color: var(--gold); }
+    :root { --gold: #d4af37; --blood: #8b0000; --parchment: #f2e6c9; --shadow: #0a0a0a; }
+    body { margin: 0; font-family: 'Georgia', serif; background: var(--shadow); color: var(--parchment); display: flex; flex-direction: column; min-height: 100vh; }
+    .screen { display: none; padding: 25px; animation: fadeIn 1.2s ease-in-out; flex-direction: column; align-items: center; }
+    .active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    h1 { font-size: 3.5em; color: var(--gold); text-shadow: 0 0 20px rgba(212, 175, 55, 0.4); margin-bottom: 5px; text-align: center; letter-spacing: 4px; }
+    .card { background: linear-gradient(145deg, #151515, #050505); border: 1px solid var(--gold); padding: 30px; border-radius: 4px; box-shadow: 0 10px 50px #000; width: 85%; max-width: 450px; text-align: center; border-image: radial-gradient(var(--gold), transparent) 1; }
+    .action-dots { display: flex; justify-content: center; gap: 20px; margin: 25px 0; }
+    .dot { width: 40px; height: 40px; border: 2px solid var(--gold); border-radius: 50%; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); transition: 0.5s; }
+    .dot.used { background: var(--blood); border-color: var(--blood); box-shadow: 0 0 20px var(--blood); transform: scale(0.9); }
+    .dot.used::after { content: '✕'; color: #000; font-size: 24px; line-height: 40px; font-weight: bold; }
+    button { background: #4a0000; color: var(--gold); border: 1px solid var(--gold); padding: 18px; font-size: 1.1em; text-transform: uppercase; letter-spacing: 3px; cursor: pointer; margin: 12px 0; width: 100%; transition: 0.4s; }
+    button:hover { background: var(--gold); color: #000; }
+    .inventory { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+    .item { padding: 8px; border: 1px solid #333; font-size: 0.8em; opacity: 0.2; transition: 0.5s; }
+    .item.active { opacity: 1; border-color: var(--gold); color: var(--gold); box-shadow: 0 0 10px var(--gold); }
+    #game-log { font-style: italic; color: #888; margin-top: 20px; font-size: 1.1em; text-shadow: 1px 1px #000; }
   </style>
 </head>
 <body>
 
+<audio id="snd-ambiente" loop src="ambiente.mp3"></audio>
+<audio id="snd-accion" src="accion.mp3"></audio>
+<audio id="snd-rugido" src="rugido.mp3"></audio>
+
 <div id="intro" class="screen active">
   <h1>DÉDALO</h1>
-  <p class="subtitle">"Solo el ingenio te sacará de Creta"</p>
   <div class="card">
-    <p>Has sido arrojado al laberinto. El Minotauro acecha en las sombras.</p>
-    <button onclick="goTo('players')">Entrar al Laberinto</button>
+    <p id="intro-text" style="line-height: 1.6;">Fuiste arrojado al corazón del laberinto de Creta. Dédalo lo construyó... El Minotauro lo habita... Solo uno de vosotros... logrará escapar.</p>
+    <button onclick="startNarrator()">Escuchar Voces</button>
   </div>
 </div>
 
 <div id="players" class="screen">
-  <h2>Tributos en Peligro</h2>
+  <h2>¿Cuántos Tributos?</h2>
   <div class="card">
-    <p>¿Cuántos almas buscan la salida?</p>
-    <button onclick="startGame(3)">3 Jugadores</button>
-    <button onclick="startGame(4)">4 Jugadores</button>
-    <button onclick="startGame(5)">5 Jugadores</button>
-    <button onclick="startGame(6)">6 Jugadores</button>
+    <button onclick="startGame(3)">III</button>
+    <button onclick="startGame(4)">IV</button>
+    <button onclick="startGame(5)">V</button>
+    <button onclick="startGame(6)">VI</button>
   </div>
 </div>
 
 <div id="game" class="screen">
-  <h2 id="turn-title" style="color: var(--gold);">Turno del Jugador 1</h2>
-  
+  <h2 id="turn-title" style="color: var(--gold); letter-spacing: 2px;">Tributo I</h2>
   <div class="card">
     <div class="action-dots">
       <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
     </div>
-    <button onclick="spendAction()">Gastar Acción</button>
-    
-    <div class="log" id="game-log">
-      El laberinto está en silencio...
-    </div>
-
+    <button onclick="spendAction()">Ejecutar Acción</button>
+    <div id="game-log">El laberinto aguarda...</div>
     <div class="inventory">
       <div id="inv-h" class="item" onclick="toggleItem('inv-h')">🪓 Hacha</div>
       <div id="inv-l" class="item" onclick="toggleItem('inv-l')">🔑 Llave</div>
       <div id="inv-e" class="item" onclick="toggleItem('inv-e')">🛡️ Escudo</div>
     </div>
-
-    <button class="secondary" onclick="finishTurn()" style="margin-top: 20px;">Terminar Turno</button>
+    <button class="secondary" onclick="finishTurn()" style="background:transparent; border-color:#444; color:#555; margin-top:25px; font-size: 0.8em;">Ceder Turno</button>
   </div>
-
-  <details style="margin-top: 20px; color: #888;">
-    <summary>Codex de Reglas</summary>
-    <ul style="text-align: left; font-size: 0.85em;">
-      <li><strong>Acciones:</strong> Mover, Rotar Loseta o Usar Objeto.</li>
-      <li><strong>Losetas:</strong> Solo puedes rotar la loseta donde estás si no hay muros negros bloqueando el giro.</li>
-      <li><strong>El Minotauro:</strong> Se mueve 2 casillas tras cada turno.</li>
-    </ul>
-  </details>
 </div>
 
 <script>
 let currentP = 1, totalP = 0, actions = 0;
-const log = document.getElementById('game-log');
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
+}
+
+function startNarrator() {
+  const text = document.getElementById('intro-text').innerText;
+  const msg = new SpeechSynthesisUtterance(text);
+  
+  // Buscar la voz más grave disponible
+  const voices = window.speechSynthesis.getVoices();
+  const deepVoice = voices.find(v => v.lang.includes('es') && (v.name.includes('Google') || v.name.includes('Jorge'))) || voices[0];
+  
+  msg.voice = deepVoice;
+  msg.lang = 'es-ES';
+  msg.rate = 0.7; // Lento
+  msg.pitch = 0.5; // Muy grave
+  
+  window.speechSynthesis.speak(msg);
+  document.getElementById('snd-ambiente').play();
+  document.getElementById('snd-ambiente').volume = 0.3;
+  goTo('players');
 }
 
 function startGame(n) { totalP = n; goTo('game'); resetTurn(); }
@@ -139,15 +99,19 @@ function startGame(n) { totalP = n; goTo('game'); resetTurn(); }
 function spendAction() {
   if (actions < 3) {
     actions++;
+    document.getElementById('snd-accion').play();
     document.getElementById('d' + actions).classList.add('used');
-    log.innerHTML = "Has realizado una acción. Te quedan " + (3-actions) + ".";
+    document.getElementById('game-log').innerText = "Acción grabada en piedra.";
   }
 }
 
 function toggleItem(id) { document.getElementById(id).classList.toggle('active'); }
 
 function finishTurn() {
-  log.innerHTML = "<span style='color:var(--blood)'>⚠️ EL MINOTAURO SE MUEVE:</span> Avanza 2 casillas hacia el tributo más cercano.";
+  window.speechSynthesis.cancel();
+  document.getElementById('snd-rugido').play();
+  document.getElementById('game-log').innerHTML = "<span style='color:var(--blood)'>EL MINOTAURO SE MUEVE II CASILLAS...</span>";
+  
   setTimeout(() => {
     currentP = (currentP % totalP) + 1;
     resetTurn();
@@ -156,10 +120,12 @@ function finishTurn() {
 
 function resetTurn() {
   actions = 0;
-  document.getElementById('turn-title').innerText = "Turno del Jugador " + currentP;
+  document.getElementById('turn-title').innerText = "Tributo " + (currentP === 1 ? "I" : currentP === 2 ? "II" : currentP === 3 ? "III" : currentP === 4 ? "IV" : currentP === 5 ? "V" : "VI");
   document.querySelectorAll('.dot').forEach(d => d.classList.remove('used'));
-  if(currentP !== 1) log.innerHTML = "El laberinto ha cambiado. Es tu turno.";
 }
+
+// Cargar voces al inicio para evitar errores
+window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
 
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js'); }
 </script>

@@ -1,0 +1,10 @@
+
+{
+  "name": "DÉDALO'S Asistente",
+  "short_name": "DÉDALO'S",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c2c2c",
+  "icons": []
+}

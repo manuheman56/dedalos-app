@@ -1,0 +1,23 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>DÉDALO'S – Asistente de Juego</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2c2c2c">
+</head>
+<body>
+  <h1>DÉDALO'S – Asistente de Juego</h1>
+  <p>Bienvenidos. Esta app os guía paso a paso durante la partida.</p>
+  <button onclick="alert('Turno iniciado. Sigue las instrucciones en pantalla.')">
+    Empezar partida guiada
+  </button>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>

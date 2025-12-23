@@ -1,163 +1,136 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Primera Partida – Dédalo’s</title>
+<title>Dédalo’s – Guía Narrada</title>
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2b1b0f">
 <style>
-body{
- margin:0;
- font-family: Arial, sans-serif;
- background: radial-gradient(circle at top, #2b1b0f, #000);
- color:#f5e9c8;
- text-align:center;
-}
-.screen{display:none;padding:20px;max-width:680px;margin:auto;}
-.active{display:block;}
-h1,h2{color:#e6c15a;}
-button{
- background:#8b0000;
- color:white;
- border:none;
- border-radius:12px;
- padding:14px 22px;
- margin:10px;
- font-size:18px;
-}
-.card{
- background:#1a120b;
- border:2px solid #e6c15a;
- border-radius:14px;
- padding:18px;
- margin:14px 0;
-}
-.help{
- position:fixed;
- bottom:10px;
- right:10px;
- background:#e6c15a;
- color:#000;
- border-radius:50%;
- width:56px;
- height:56px;
- font-size:26px;
-}
-.small{font-size:0.9em;color:#ddd;}
+  :root { --gold: #e6c15a; --blood: #8b0000; --dark: #1a120b; }
+  body { margin:0; font-family: 'Segoe UI', sans-serif; background: radial-gradient(circle at top, #2b1b0f, #000); color:#f5e9c8; text-align:center; }
+  .screen { display:none; padding:20px; max-width:600px; margin:auto; animation: fadeIn 0.4s; }
+  .active { display:block; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  h1, h2 { color: var(--gold); text-transform: uppercase; }
+  .card { background: var(--dark); border: 2px solid var(--gold); border-radius: 14px; padding: 20px; margin: 15px 0; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+  button { background: var(--blood); color: white; border: 1px solid var(--gold); border-radius: 12px; padding: 14px 22px; margin: 8px; font-size: 16px; cursor: pointer; font-weight: bold; }
+  .btn-audio { background: transparent; border: 1px solid var(--gold); color: var(--gold); font-size: 14px; padding: 8px 12px; }
+  .manual-img { width: 100%; border-radius: 8px; border: 1px solid #444; margin-bottom: 10px; }
+  .action-orb { display: inline-block; width: 45px; height: 45px; border: 2px solid var(--gold); border-radius: 50%; line-height: 45px; margin: 5px; font-size: 1.2em; }
+  .used { background: var(--gold); color: black; }
 </style>
 </head>
 <body>
 
 <div id="intro" class="screen active">
-<h1>DÉDALO’S</h1>
-<div class="card">
-<p>Hace mucho tiempo, un inventor llamado <b>Dédalo</b> construyó el laberinto más grande del mundo.</p>
-<p>Dentro vive el <b>Minotauro</b>, que también está perdido.</p>
-<p>Tú y tus amigos sois <b>exploradores</b>.</p>
-<button onclick="go('goal')">Continuar</button>
+  <h1>DÉDALO’S</h1>
+  <div class="card">
+    <img src="entrada.jpg" class="manual-img">
+    <p>Dédalo construyó el laberinto, y tú eres el explorador. Partirás desde el centro: <b>La Entrada</b>.</p>
+    <button onclick="go('context','02_contexto.mp3')">Comenzar</button>
+    <button class="btn-audio" onclick="playAudio('01_intro.mp3')">🔊 Escuchar Inicio</button>
+  </div>
 </div>
+
+<div id="context" class="screen">
+  <div class="card">
+    <h2>El Laberinto</h2>
+    <p>Un lugar donde los pasillos se mueven y el <b>Minotauro</b> acecha en cada sombra.</p>
+    <button onclick="go('goal','03_objetivo.mp3')">¿Cómo gano?</button>
+  </div>
 </div>
 
 <div id="goal" class="screen">
-<div class="card">
-<h2>Objetivo</h2>
-<p>🏆 Gana el primer explorador que llegue a una <b>salida</b> del laberinto.</p>
-<button onclick="go('turn')">¿Cómo es un turno?</button>
-</div>
+  <div class="card">
+    <h2>Tu Objetivo</h2>
+    <img src="salida.jpg" class="manual-img">
+    <p>Gana el primer jugador que llegue a una de las <b>Salidas</b>.</p>
+    <button onclick="go('turn','04_turno.mp3')">¿Qué hago en mi turno?</button>
+  </div>
 </div>
 
 <div id="turn" class="screen">
-<div class="card">
-<h2>Tu turno</h2>
-<p>En tu turno haces <b>3 acciones diferentes</b>:</p>
-<p>🧱 Colocar loseta<br>👣 Moverte<br>🤜 Empujar</p>
-<button onclick="go('special')">Losetas especiales</button>
-</div>
+  <div class="card">
+    <h2>El Turno</h2>
+    <p>Tienes 3 acciones. Puedes:</p>
+    <p>🧱 Colocar loseta (¡Cuidado con los muros!)<br>👣 Moverte o 🤜 Empujar</p>
+    <button onclick="go('special','08_especiales.mp3')">Ver Losetas Especiales</button>
+    <button class="btn-audio" onclick="playAudio('04_turno.mp3')">🔊 Explicación</button>
+  </div>
 </div>
 
 <div id="special" class="screen">
-<div class="card">
-<h2>Especiales</h2>
-<p>⭐ Estrellas: se colocan encima si tienen más estrellas.</p>
-<p>💥 Derrumbe: bloquea una salida.</p>
-<p>🐂 Minotauro: aparece y se mueve cuando sale su loseta.</p>
-<button onclick="go('players')">Empezar partida</button>
-</div>
+  <div class="card">
+    <h2>Losetas Especiales</h2>
+    <p>⭐ <b>Estrellas:</b> Se ponen sobre otras con menos estrellas.</p>
+    <p>🚫 <b>Derrumbe:</b> Anula una salida por completo.</p>
+    <p>🐂 <b>Minotauro:</b> Obligatorio jugarlo si te sale.</p>
+    <button onclick="go('players')">¡A jugar!</button>
+  </div>
 </div>
 
 <div id="players" class="screen">
-<div class="card">
-<h2>¿Cuántos jugadores sois?</h2>
-<button onclick="start(3)">3</button>
-<button onclick="start(4)">4</button>
-<button onclick="start(5)">5</button>
-<button onclick="start(6)">6</button>
-</div>
+  <div class="card">
+    <h2>Nº de Exploradores</h2>
+    <button onclick="start(3)">3</button>
+    <button onclick="start(4)">4</button>
+    <button onclick="start(5)">5</button>
+    <button onclick="start(6)">6</button>
+  </div>
 </div>
 
 <div id="game" class="screen">
-<h2 id="turnTitle"></h2>
-<div class="card">
-<p>Acciones restantes: <b id="actions">3</b></p>
-<button onclick="useAction()">Usar acción</button>
-<button onclick="endTurn()">Terminar turno</button>
-<p id="msg" class="small"></p>
-</div>
-<button class="help" onclick="help()">❓</button>
+  <h2 id="turnTitle">Turno 1</h2>
+  <div class="card">
+    <div id="orbs">
+      <div id="orb1" class="action-orb">1</div>
+      <div id="orb2" class="action-orb">2</div>
+      <div id="orb3" class="action-orb">3</div>
+    </div>
+    <button onclick="useAction()">Usar Acción</button>
+    <button onclick="endTurn()" style="background:#444;">Pasar Turno</button>
+  </div>
+  <button class="btn-audio" onclick="playAudio('10_ayuda.mp3')">❓ Ayuda</button>
 </div>
 
 <script>
-let players=0, current=1, actions=3;
+let players=0, current=1, actions=3, currentAudio=null;
 
-function go(id){
- document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
- document.getElementById(id).classList.add('active');
+function playAudio(file){
+  if(currentAudio){ currentAudio.pause(); currentAudio.currentTime = 0; }
+  currentAudio = new Audio('audio/' + file);
+  currentAudio.play().catch(e => console.log("Audio bloqueado por navegador"));
+}
+
+function go(id, audioFile=null){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if(audioFile) playAudio(audioFile);
 }
 
 function start(p){
- players=p;
- current=1;
- actions=3;
- go('game');
- update();
+  players=p; current=1; actions=3;
+  go('game', '06_movimiento.mp3');
+  update();
 }
 
 function update(){
- document.getElementById('turnTitle').innerText='Turno del Explorador '+current;
- document.getElementById('actions').innerText=actions;
+  document.getElementById('turnTitle').innerText='Explorador '+current;
+  for(let i=1; i<=3; i++){
+    document.getElementById('orb'+i).className = i <= (3-actions) ? 'action-orb used' : 'action-orb';
+  }
 }
 
 function useAction(){
- if(actions>0){
-  actions--;
-  document.getElementById('msg').innerText='Has usado una acción.';
-  update();
- }
+  if(actions>0){ actions--; update(); }
 }
 
 function endTurn(){
- if(actions>0){
-  if(!confirm('Aún te quedan acciones. ¿Seguro que quieres terminar?')) return;
- }
- current++;
- if(current>players) current=1;
- actions=3;
- document.getElementById('msg').innerText='Nuevo turno.';
- update();
-}
-
-function help(){
- if(actions===3){
-  alert('Es tu turno. Tienes 3 acciones diferentes.');
- }else if(actions>0){
-  alert('Te quedan '+actions+' acciones.');
- }else{
-  alert('Ya no te quedan acciones. Puedes terminar tu turno.');
- }
+  playAudio('07_minotauro.mp3');
+  current = (current % players) + 1;
+  actions = 3;
+  update();
 }
 </script>
-
 </body>
 </html>

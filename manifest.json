@@ -1,9 +1,15 @@
-
 {
- "name":"Primera Partida – Dédalo’s",
+ "name":"Dédalo’s – Guía Narrada",
  "short_name":"Dédalo’s",
  "start_url":"index.html",
  "display":"standalone",
  "background_color":"#000000",
- "theme_color":"#2b1b0f"
+ "theme_color":"#8b0000",
+ "icons": [
+    {
+      "src": "https://img.icons8.com/ios-filled/512/e6c15a/labyrinth.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }

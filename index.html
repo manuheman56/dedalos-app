@@ -3,30 +3,37 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>DÉDALO'S – Guía del Tributo</title>
+  <title>DÉDALO'S – Guía del Héroe</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#1b1b1b">
   <style>
-    :root { --gold: #d4af37; --blood: #8b0000; --parchment: #f2e6c9; --shadow: #0a0a0a; }
-    body { margin: 0; font-family: 'Georgia', serif; background: var(--shadow); color: var(--parchment); display: flex; flex-direction: column; min-height: 100vh; }
-    .screen { display: none; padding: 25px; animation: fadeIn 1.2s ease-in-out; flex-direction: column; align-items: center; }
+    :root { --gold: #c5a059; --blood: #7a0000; --parchment: #f4e4bc; --stone: #1a1a1a; }
+    body { margin: 0; font-family: 'Verdana', serif; background: #050505; color: var(--parchment); text-align: center; }
+    .screen { display: none; padding: 20px; animation: fadeIn 0.8s; flex-direction: column; align-items: center; }
     .active { display: flex; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    h1 { font-size: 2.8em; color: var(--gold); text-shadow: 0 0 15px rgba(212, 175, 55, 0.4); text-align: center; letter-spacing: 4px; margin-bottom: 10px; }
-    h3 { color: var(--gold); border-bottom: 1px solid var(--blood); padding-bottom: 5px; width: 100%; }
-    .card { background: linear-gradient(145deg, #151515, #050505); border: 1px solid var(--gold); padding: 25px; border-radius: 4px; box-shadow: 0 10px 50px #000; width: 90%; max-width: 500px; }
-    
-    /* Instrucciones para novatos */
-    .instruction-step { text-align: left; font-size: 0.95em; margin-bottom: 15px; line-height: 1.4; }
-    .instruction-step b { color: var(--gold); }
 
-    .action-dots { display: flex; justify-content: center; gap: 20px; margin: 20px 0; }
-    .dot { width: 35px; height: 35px; border: 2px solid var(--gold); border-radius: 50%; transition: 0.5s; }
-    .dot.used { background: var(--blood); box-shadow: 0 0 15px var(--blood); }
+    .scroll { background: var(--stone); border: 2px solid var(--gold); border-radius: 15px; padding: 20px; width: 95%; max-width: 550px; box-shadow: 0 0 30px #000; }
+    h1 { color: var(--gold); font-size: 2.5em; letter-spacing: 4px; border-bottom: 2px solid var(--blood); margin: 10px 0; }
+    h2 { color: var(--gold); margin-top: 0; }
+
+    /* Contenedor de Imagen Explicativa */
+    .img-card { background: #000; border: 1px solid var(--gold); border-radius: 10px; margin: 10px 0; padding: 5px; }
+    .img-card img { width: 100%; border-radius: 8px; display: block; }
+    .img-caption { font-size: 0.8em; color: var(--gold); padding: 5px; font-style: italic; }
+
+    .kid-box { background: rgba(255,255,255,0.05); padding: 15px; border-radius: 10px; margin: 10px 0; text-align: left; border-left: 5px solid var(--gold); }
+    .kid-box b { color: var(--gold); display: block; margin-bottom: 5px; }
+
+    button { background: var(--blood); color: white; border: 1px solid var(--gold); padding: 18px; border-radius: 50px; font-weight: bold; font-size: 1.1em; cursor: pointer; width: 90%; margin: 10px; box-shadow: 0 4px 0 #000; }
     
-    button { background: #4a0000; color: var(--gold); border: 1px solid var(--gold); padding: 15px; font-size: 1em; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; margin: 10px 0; width: 100%; }
-    button:hover { background: var(--gold); color: #000; }
-    .secondary { background: transparent; border-color: #444; color: #777; font-size: 0.8em; }
+    .dots { display: flex; justify-content: center; gap: 15px; margin: 20px 0; }
+    .dot { width: 45px; height: 45px; border: 3px solid var(--gold); border-radius: 50%; line-height: 45px; font-size: 1.2em; }
+    .dot.used { background: var(--gold); color: black; }
+
+    /* Glosario rápido */
+    .grid-help { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+    .help-item { background: #333; padding: 10px; border-radius: 8px; font-size: 0.8em; }
+    .help-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 5px; margin-bottom: 5px; }
   </style>
 </head>
 <body>
@@ -36,51 +43,62 @@
 
 <div id="intro" class="screen active">
   <h1>DÉDALO</h1>
-  <div class="card">
-    <h3>El Mito</h3>
-    <p id="lore-text">Sois los tributos arrojados al laberinto de Creta. El arquitecto Dédalo lo diseñó para que nadie saliera jamás.</p>
-    <h3>Tu Objetivo</h3>
-    <p><b>Sé el primero en escapar.</b> Debes abrirte camino desde la entrada hasta una de las salidas mientras bloqueas a tus rivales y evitas al Minotauro.</p>
-    <button onclick="startNarrator()">Entender las Reglas</button>
+  <div class="scroll">
+    <div class="img-card">
+      <img src="entrada.jpg" alt="Entrada del Laberinto">
+      <div class="img-caption">Aquí comienza vuestra aventura</div>
+    </div>
+    <div class="kid-box">
+      <b>¿Qué hay que hacer?</b>
+      Todos empezáis en la ficha de <b>Entrada</b>. Debéis construir un camino para llegar a las esquinas.
+    </div>
+    <button onclick="iniciarMito()">Escuchar al Espíritu</button>
   </div>
 </div>
 
-<div id="how-to" class="screen">
-  <h1>INSTRUCCIONES</h1>
-  <div class="card">
-    <div class="instruction-step">
-      <b>1. Tu Mano:</b> Siempre tienes 3 losetas.
+<div id="rules" class="screen">
+  <h2>¿Cómo moverte?</h2>
+  <div class="scroll">
+    <div class="kid-box">
+      <b>1. Pon una pieza</b>
+      Usa tus <b>losetas de camino</b> para crear pasillos. Al menos un lado debe tocar un camino abierto.
+      <div class="img-card"><img src="camino.jpg"></div>
     </div>
-    <div class="instruction-step">
-      <b>2. Acciones (3 por turno):</b> Puedes poner una loseta en el tablero, mover tu ficha o rotar una loseta donde ya estés.
+    <div class="kid-box">
+      <b>2. El Objetivo</b>
+      Busca las piezas de <b>Salida</b> en las esquinas. ¡Si llegas ahí, ganas!
+      <div class="img-card"><img src="salida.jpg"></div>
     </div>
-    <div class="instruction-step">
-      <b>3. El Minotauro:</b> Aparece con losetas especiales. Al final de cada turno, ¡se mueve hacia el jugador más cercano!
-    </div>
-    <button onclick="goTo('players')">Empezar a Jugar</button>
-  </div>
-</div>
-
-<div id="players" class="screen">
-  <h2>¿Cuántos Tributos arriesgan su vida?</h2>
-  <div class="card">
-    <button onclick="startGame(3)">III Jugadores</button>
-    <button onclick="startGame(4)">IV Jugadores</button>
-    <button onclick="startGame(5)">V Jugadores</button>
-    <button onclick="startGame(6)">VI Jugadores</button>
+    <button onclick="goTo('players')">¡Entendido!</button>
   </div>
 </div>
 
 <div id="game" class="screen">
-  <h2 id="turn-title" style="color: var(--gold);">TRIBUTO I</h2>
-  <div class="card">
-    <p style="font-size: 0.8em; opacity: 0.7;">Recuerda: Tienes 3 acciones (Poner loseta, Mover o Rotar).</p>
-    <div class="action-dots">
-      <div class="dot" id="d1"></div><div class="dot" id="d2"></div><div class="dot" id="d3"></div>
+  <h2 id="turn-tag">HÉROE 1</h2>
+  <div class="scroll">
+    <div class="dots">
+      <div id="ap1" class="dot">1</div><div id="ap2" class="dot">2</div><div id="ap3" class="dot">3</div>
     </div>
-    <button onclick="spendAction()">Gastar Acción</button>
-    <div id="game-log" style="font-style: italic; margin: 10px 0;">El laberinto aguarda...</div>
-    <button class="secondary" onclick="finishTurn()">Terminar Turno y Mover Minotauro</button>
+    <button onclick="usarAccion()">Gastar Acción</button>
+    
+    <p id="log">Toca una pieza si no sabes qué hace:</p>
+    
+    <div class="grid-help">
+      <div class="help-item" onclick="explicar('Estrella', '¡Supervelocidad! Tienes 4 acciones este turno.')">
+        <img src="estrella.jpg"><br>Estrella
+      </div>
+      <div class="help-item" onclick="explicar('Derrumbe', '¡Rocas caen! Bloquea un camino para siempre.')">
+        <img src="derrumbe.jpg"><br>Derrumbe
+      </div>
+      <div class="help-item" onclick="explicar('Minotauro', '¡El toro despierta! Ponlo en el centro y muévelo 2 pasos.')">
+        <img src="minotauro.jpg"><br>Minotauro
+      </div>
+      <div class="help-item" onclick="explicar('Muros', 'No puedes pasar por las líneas negras. ¡Gira la pieza!')">
+        <img src="camino.jpg"><br>Paredes
+      </div>
+    </div>
+
+    <button style="background:var(--gold); color:black; margin-top:20px;" onclick="finTurno()">Terminar Turno</button>
   </div>
 </div>
 
@@ -92,58 +110,47 @@ function goTo(id) {
   document.getElementById(id).classList.add('active');
 }
 
-function startNarrator() {
-  const text = "Escuchad, tributos. Vuestro objetivo es simple: escapar antes que los demás. En cada turno tenéis tres acciones. Podéis colocar pasillos, moveros por ellos o rotar el laberinto. Pero cuidado, tras vuestro movimiento, el Minotauro despertará.";
-  const msg = new SpeechSynthesisUtterance(text);
-  
-  // LÓGICA DE VOZ MEJORADA
-  const voices = window.speechSynthesis.getVoices();
-  // Buscamos voces masculinas o con nombres que suelen ser graves
-  const voice = voices.find(v => v.lang.includes('es') && (v.name.includes('Male') || v.name.includes('Google español') || v.name.includes('Jorge'))) || voices[0];
-  
-  msg.voice = voice;
-  msg.rate = 0.75; // Muy pausado
-  msg.pitch = 0.4; // Forzamos el tono más grave posible (el mínimo es 0)
-  
+function iniciarMito() {
+  const t = "Escuchad. Empezáis en la entrada. Usad los caminos para llegar a la salida dorada. Pero cuidado con el Minotauro.";
+  const msg = new SpeechSynthesisUtterance(t);
+  msg.pitch = 0.3; msg.rate = 0.8;
   window.speechSynthesis.speak(msg);
   document.getElementById('snd-ambiente').play();
-  document.getElementById('snd-ambiente').volume = 0.2;
-  goTo('how-to');
+  goTo('rules');
 }
 
 function startGame(n) { totalP = n; goTo('game'); resetTurn(); }
 
-function spendAction() {
+function usarAccion() {
   if (actions < 3) {
     actions++;
-    document.getElementById('d' + actions).classList.add('used');
-    document.getElementById('game-log').innerText = "Acción " + actions + " completada.";
+    document.getElementById('ap' + actions).classList.add('used');
+    document.getElementById('ap' + actions).innerText = '✔';
   }
 }
 
-function finishTurn() {
-  window.speechSynthesis.cancel();
+function finTurno() {
   document.getElementById('snd-rugido').play();
-  document.getElementById('game-log').innerHTML = "<span style='color:var(--blood)'>¡EL MINOTAURO AVANZA 2 CASILLAS!</span>";
-  
+  document.getElementById('log').innerHTML = "<b style='color:red'>¡EL MINOTAURO SE MUEVE!</b>";
   setTimeout(() => {
     currentP = (currentP % totalP) + 1;
     resetTurn();
-  }, 3500);
+  }, 3000);
+}
+
+function explicar(nombre, texto) {
+  window.speechSynthesis.cancel();
+  const msg = new SpeechSynthesisUtterance(texto);
+  msg.pitch = 0.4;
+  window.speechSynthesis.speak(msg);
+  document.getElementById('log').innerHTML = `<b>${nombre}:</b> ${texto}`;
 }
 
 function resetTurn() {
   actions = 0;
-  document.getElementById('turn-title').innerText = "TRIBUTO " + currentP;
-  document.querySelectorAll('.dot').forEach(d => d.classList.remove('used'));
-  document.getElementById('game-log').innerText = "Es tu turno. Planea tus 3 acciones.";
-}
-
-// Cargar voces para que estén listas al pulsar
-window.speechSynthesis.onvoiceschanged = () => window.speechSynthesis.getVoices();
-
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('service-worker.js');
+  document.getElementById('turn-tag').innerText = "HÉROE " + currentP;
+  document.querySelectorAll('.dot').forEach((d,i) => { d.classList.remove('used'); d.innerText = i+1; });
+  document.getElementById('log').innerText = "Planea tus 3 acciones.";
 }
 </script>
 </body>

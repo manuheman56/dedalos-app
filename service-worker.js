@@ -1,5 +1,5 @@
 
-const CACHE="dedalos-cache-v1";
+const CACHE="primera-partida-dedalos-v1";
 self.addEventListener("install",e=>{
  e.waitUntil(caches.open(CACHE).then(c=>c.addAll(["index.html","manifest.json"])));
 });

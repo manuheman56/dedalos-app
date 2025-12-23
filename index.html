@@ -15,7 +15,7 @@ body{
  color:#f5e9c8;
  text-align:center;
 }
-.screen{display:none;padding:22px;max-width:640px;margin:auto;}
+.screen{display:none;padding:20px;max-width:680px;margin:auto;}
 .active{display:block;}
 h1,h2{color:#e6c15a;}
 button{
@@ -34,6 +34,17 @@ button{
  padding:18px;
  margin:14px 0;
 }
+.help{
+ position:fixed;
+ bottom:10px;
+ right:10px;
+ background:#e6c15a;
+ color:#000;
+ border-radius:50%;
+ width:56px;
+ height:56px;
+ font-size:26px;
+}
 .small{font-size:0.9em;color:#ddd;}
 </style>
 </head>
@@ -42,7 +53,7 @@ button{
 <div id="intro" class="screen active">
 <h1>DÉDALO’S</h1>
 <div class="card">
-<p>Hace mucho tiempo, un inventor muy listo llamado <b>Dédalo</b> construyó el laberinto más grande del mundo.</p>
+<p>Hace mucho tiempo, un inventor llamado <b>Dédalo</b> construyó el laberinto más grande del mundo.</p>
 <p>Dentro vive el <b>Minotauro</b>, que también está perdido.</p>
 <p>Tú y tus amigos sois <b>exploradores</b>.</p>
 <button onclick="go('goal')">Continuar</button>
@@ -53,7 +64,7 @@ button{
 <div class="card">
 <h2>Objetivo</h2>
 <p>🏆 Gana el primer explorador que llegue a una <b>salida</b> del laberinto.</p>
-<button onclick="go('turn')">¿Qué hago en mi turno?</button>
+<button onclick="go('turn')">¿Cómo es un turno?</button>
 </div>
 </div>
 
@@ -61,15 +72,14 @@ button{
 <div class="card">
 <h2>Tu turno</h2>
 <p>En tu turno haces <b>3 acciones diferentes</b>:</p>
-<p>🧱 Colocar una loseta<br>👣 Moverte<br>🤜 Empujar</p>
-<p class="small">❌ No puedes repetir la misma acción 3 veces.</p>
+<p>🧱 Colocar loseta<br>👣 Moverte<br>🤜 Empujar</p>
 <button onclick="go('special')">Losetas especiales</button>
 </div>
 </div>
 
 <div id="special" class="screen">
 <div class="card">
-<h2>Losetas especiales</h2>
+<h2>Especiales</h2>
 <p>⭐ Estrellas: se colocan encima si tienen más estrellas.</p>
 <p>💥 Derrumbe: bloquea una salida.</p>
 <p>🐂 Minotauro: aparece y se mueve cuando sale su loseta.</p>
@@ -93,7 +103,9 @@ button{
 <p>Acciones restantes: <b id="actions">3</b></p>
 <button onclick="useAction()">Usar acción</button>
 <button onclick="endTurn()">Terminar turno</button>
+<p id="msg" class="small"></p>
 </div>
+<button class="help" onclick="help()">❓</button>
 </div>
 
 <script>
@@ -120,15 +132,30 @@ function update(){
 function useAction(){
  if(actions>0){
   actions--;
+  document.getElementById('msg').innerText='Has usado una acción.';
   update();
  }
 }
 
 function endTurn(){
+ if(actions>0){
+  if(!confirm('Aún te quedan acciones. ¿Seguro que quieres terminar?')) return;
+ }
  current++;
  if(current>players) current=1;
  actions=3;
+ document.getElementById('msg').innerText='Nuevo turno.';
  update();
+}
+
+function help(){
+ if(actions===3){
+  alert('Es tu turno. Tienes 3 acciones diferentes.');
+ }else if(actions>0){
+  alert('Te quedan '+actions+' acciones.');
+ }else{
+  alert('Ya no te quedan acciones. Puedes terminar tu turno.');
+ }
 }
 </script>
 
